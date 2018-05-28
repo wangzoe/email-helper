@@ -21,24 +21,12 @@ def get_email():
     msg = []
     miss = 0  
  
-    
-    '''date = get_date(mssgg)
-
-    if date > deadline:
-        print('请将guess_num改大些。')
-        guess_num = input()
-    '''
     for i in range(maxn):
         j = str(int(mailnum) - i)
         try:
             res, msg_data = server.fetch(j, '(RFC822)')
-
             mssgg = email.message_from_bytes(msg_data[0][1])
-        #date = get_date(mssgg)
-        #if date > deadline:
             msg.append(mssgg)
-        #else:
-            #break
         except:
             miss +=1
             continue
@@ -56,6 +44,7 @@ def get_subject(message):
     dh = email.header.decode_header(subject)
     chart = dh[0][1]
     if chart != None:
+        # chart这个字符是该邮件的编码code
         head_line = dh[0][0].decode(chart)
     else:
         head_line = dh[0][0]
@@ -80,6 +69,7 @@ def get_attach(message):
             else:
                 fileName = f[0][0]
             name, sty = os.path.splitext(fileName)
+            # 不下载附件中的图片格式，避免一些签名等无效图片
             if sty in ['.bmp', '.jpg', '.png', '.gif', '.tiff']:
                 continue
             else:
@@ -93,7 +83,8 @@ def save_attach(message):
         if fn :
             f = email.header.decode_header(fn)
             chat = f[0][1]
-            if chat!= None:                
+            if chat!= None:
+                # 同样处理编码问题
                 fileName = f[0][0].decode(chat)
             else:
                 fileName = f[0][0]
@@ -111,11 +102,13 @@ def save_attach(message):
 def get_content(message):
     parts = message.walk()
     content = ''
+    # 得到邮件所有编码相关类型
     chats = message.get_charsets()
     chat = ''
     for c in chats:
         if chat == '':
             if c != None:
+                # 第一个code是邮件的编码code
                 chat = c
 
     for part in parts:
@@ -123,7 +116,7 @@ def get_content(message):
             if part.is_multipart() is False:
 
                 content = part.get_payload(decode = True).decode(chat)
-                #打出来总是两遍，能改成一遍么？这样就是一遍了
+                
     return content
 
 
@@ -162,8 +155,8 @@ miss_sender = []
 
 #初始化相关数据
 host = 'imap.mxhichina.com'
-username = 'yun.wang@yitu-inc.com'
-password = 'Zoe@1016'
+username = 'yun.wang@aaa.com'
+password = 'XXX'
 
 msg_real = []
 missn = 0
